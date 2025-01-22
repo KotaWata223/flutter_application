@@ -1,26 +1,47 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_2/FirstPage.dart';
+import 'package:flutter_application_2/SecondPage.dart';
 
-
-class HomePage extends StatelessWidget{
+class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("ホーム"),
+        title: const Text('Home Page'),
       ),
       body: Center(
-        child: TextButton(
-          child: Text("1ページ目に遷移する"),
-          onPressed: (){
-            // （1） 指定した画面に遷移する
-            Navigator.push(context, MaterialPageRoute(
-              // （2） 実際に表示するページ(ウィジェット)を指定する
-              builder: (context) => FirstPage()
-            ));
-          },
-        ),
+  child: Column(
+    mainAxisAlignment: MainAxisAlignment.center, // 中央揃え
+    children: [
+      OutlinedButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => FirstPage(),
+            ),
+          );
+        },
+        child: const Text('ログイン'),
       ),
+      const SizedBox(height: 20), // ボタン間のスペース
+      OutlinedButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) =>  SecondPage(),
+            ),
+          );
+        },
+        child: const Text('新規登録'),
+      ),
+    ],
+  ),
+),
+
     );
   }
 }
+
+
