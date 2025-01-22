@@ -1,1 +1,4 @@
 2025年flutter期末課題仕様書
+HomePage.dartからログインボタンを押すとFirstPage
+HomePage.dartから新規登録ボタンを押すとSecondPage
+に遷移する
