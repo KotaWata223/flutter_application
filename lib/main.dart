@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_2/HomePage.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+
+
 
 void main() {
   runApp(const MyApp());
@@ -32,6 +35,15 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromRGBO(83, 183, 58, 1)),
         useMaterial3: true,
       ),
+      localizationsDelegates: [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate, // iOSスタイルにも対応
+      ],
+      supportedLocales: [
+        Locale('ja', ''), // 日本語
+        Locale('en', ''), // 英語
+      ],
       //home: const MyHomePage(title: 'Flutter Demo Home Page'),
       home: HomePage(),
     );
