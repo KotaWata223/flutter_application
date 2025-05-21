@@ -87,7 +87,25 @@ class _HomePageState extends State<HomePage> {
             },
             eventLoader: getEventForDay,
           ),
+          OutlinedButton(
+            child: const Text('シフト追加'),
+            style: OutlinedButton.styleFrom(
+              shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+            ),
+              side: const BorderSide(),
+              
+            ),
+            onPressed: () {
+              showModalBottomSheet(
+              context: context,
+              builder: (context) => _BottomSheet(),
+           );
+
+            },
+          ),
           Expanded(
+            
           child:ListView(
             shrinkWrap: true,
             children: getEventForDay(_selectedDay!)
@@ -98,6 +116,36 @@ class _HomePageState extends State<HomePage> {
           ),
         )
         ],
+      ),
+    );
+  }
+}
+
+class _RenderFloatingActionButton extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return FloatingActionButton(
+      onPressed: () {
+        showModalBottomSheet(
+          context: context,
+          builder: (context) => _BottomSheet(),
+        );
+      },
+      child: Icon(Icons.add),
+    );
+  }
+}
+
+class _BottomSheet extends StatelessWidget {
+  const _BottomSheet({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 230.0,
+      color: const Color.fromARGB(255, 255, 246, 220),
+      child: Center(
+        child: Text('BottomSheet Content1'),
       ),
     );
   }
