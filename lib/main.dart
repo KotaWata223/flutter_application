@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'src/app.dart';
-import 'package:flutter_application_2/src/screens/HomePage.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 
