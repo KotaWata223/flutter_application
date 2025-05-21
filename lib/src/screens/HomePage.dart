@@ -87,10 +87,16 @@ class _HomePageState extends State<HomePage> {
             },
             eventLoader: getEventForDay,
           ),
-          const SizedBox(height: 8),
-          ...getEventForDay(_selectedDay ?? DateTime.now()).map((event) => ListTile(
-                title: Text(event.toString()),
-              )),
+          Expanded(
+          child:ListView(
+            shrinkWrap: true,
+            children: getEventForDay(_selectedDay!)
+                .map((event) => ListTile(
+                      title: Text(event.toString()),
+                    ))
+                .toList(),
+          ),
+        )
         ],
       ),
     );
