@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      // NavigaionBarのClassを呼び出す
+      // NavigationBarのClassを呼び出す
       home: const BottomNavigation(),
     );
   }
@@ -52,7 +52,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
           });
         },
         // 選択されているタブの色（公式サイトのまま黄色）
-        indicatorColor: Colors.blue,
+        indicatorColor: Colors.green,
         // 選択されたタブの設定（設定しないと画面は切り替わってもタブの色は変わらないです）
         selectedIndex: _selectedIndex,
         // タブ自体の設定（必須項目のため、書かないとエラーになります）

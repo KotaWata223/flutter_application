@@ -57,8 +57,9 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('カレンダー'),
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
-      body: Column( 
+      body: Column(
         children: [
           TableCalendar(
             locale: 'ja_JP',
@@ -91,30 +92,28 @@ class _HomePageState extends State<HomePage> {
             child: const Text('シフト追加'),
             style: OutlinedButton.styleFrom(
               shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-            ),
+                borderRadius: BorderRadius.circular(10),
+              ),
               side: const BorderSide(),
-              
             ),
             onPressed: () {
               showModalBottomSheet(
-              context: context,
-              builder: (context) => _BottomSheet(),
-           );
-
+                context: context,
+                builder: (context) =>
+                    _BottomSheet(selectedDay: _selectedDay ?? DateTime.now()),
+              );
             },
           ),
           Expanded(
-            
-          child:ListView(
-            shrinkWrap: true,
-            children: getEventForDay(_selectedDay!)
-                .map((event) => ListTile(
-                      title: Text(event.toString()),
-                    ))
-                .toList(),
-          ),
-        )
+            child: ListView(
+              shrinkWrap: true,
+              children: getEventForDay(_selectedDay!)
+                  .map((event) => ListTile(
+                        title: Text(event.toString()),
+                      ))
+                  .toList(),
+            ),
+          )
         ],
       ),
     );
@@ -122,13 +121,21 @@ class _HomePageState extends State<HomePage> {
 }
 
 class _RenderFloatingActionButton extends StatelessWidget {
+  //シフト追加のボタン
+
+  final DateTime selectedDay;
+
+  const _RenderFloatingActionButton({required this.selectedDay});
+
   @override
   Widget build(BuildContext context) {
     return FloatingActionButton(
       onPressed: () {
+        //押したときの処理
         showModalBottomSheet(
+          //関数呼び出し
           context: context,
-          builder: (context) => _BottomSheet(),
+          builder: (context) => _BottomSheet(selectedDay: selectedDay),
         );
       },
       child: Icon(Icons.add),
@@ -137,16 +144,16 @@ class _RenderFloatingActionButton extends StatelessWidget {
 }
 
 class _BottomSheet extends StatelessWidget {
-  const _BottomSheet({Key? key}) : super(key: key);
-
+  final DateTime selectedDay;
+  const _BottomSheet({Key? key, required this.selectedDay}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Container(
       height: 230.0,
-      color: const Color.fromARGB(255, 255, 246, 220),
-      child: Center(
-        child: Text('BottomSheet Content1'),
-      ),
+      width: 700, //高さ
+      color: const Color.fromARGB(255, 255, 246, 220), //色
+      child: Text(
+          ' ${selectedDay.toLocal().toString().split(' ')[0]}にシフトを追加する'), // ここで表示
     );
   }
 }
