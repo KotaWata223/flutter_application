@@ -151,7 +151,7 @@ class _BottomSheet extends StatelessWidget {
     return Container(
       height: 230.0,
       width: 700, //高さ
-      color: const Color.fromARGB(255, 255, 246, 220), //色
+      color: const Color.fromARGB(255, 74, 74, 74), //色
       child: Text(
           ' ${selectedDay.toLocal().toString().split(' ')[0]}にシフトを追加する'), // ここで表示
     );

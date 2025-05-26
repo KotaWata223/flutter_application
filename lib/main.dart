@@ -1,12 +1,42 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_2/src/screens/HomePage.dart';
 import 'src/app.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 
-
-
-void main() {
-  runApp(const MyApp());
-}
+Future <void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  try{
+    if (kIsWeb) {
+      await Firebase.initializeApp(
+        options:const FirebaseOptions(
+          apiKey: "AIzaSyAIi9fnYe5JBbZBKwOdu38KmJo7uYnkdZo",
+          authDomain: "flutter-app-28e10.firebaseapp.com",
+          projectId: "flutter-app-28e10",
+          storageBucket: "flutter-app-28e10.firebasestorage.app",
+          messagingSenderId: "689211015421",
+          appId: "1:689211015421:web:54adcfa16e67952680fe94",
+          measurementId: "G-Z7CBMPKC1E"
+        ),
+      );
+    } else {
+      await Firebase.initializeApp();
+    }
+    runApp(const MyApp());
+  } catch (e){
+    runApp(
+      MaterialApp(
+        home: Scaffold(
+          body: Center(
+            child: Text('Firebase 初期化エラー: $e'),
+          ),
+        ),
+      ),
+    );
+  }
+  } 
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -33,7 +63,8 @@ class MyApp extends StatelessWidget {
         //
         // This works for code too, not just values: Most code changes can be
         // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromRGBO(83, 183, 58, 1)),
+        colorScheme: ColorScheme.fromSeed(
+            seedColor: const Color.fromRGBO(83, 183, 58, 1)),
         useMaterial3: true,
       ),
       localizationsDelegates: [
@@ -46,7 +77,89 @@ class MyApp extends StatelessWidget {
         Locale('en', ''), // 英語
       ],
       //home: const MyHomePage(title: 'Flutter Demo Home Page'),
-      home: BottomNavigation(),
+      home: MyAuthPage(),
+    );
+  }
+}
+
+class MyAuthPage extends StatefulWidget {
+  @override
+  _MyAuthPageState createState() => _MyAuthPageState();
+}
+
+class _MyAuthPageState extends State<MyAuthPage> {
+  // 入力されたメールアドレス
+  String newUserEmail = "";
+  // 入力されたパスワード
+  String newUserPassword = "";
+  // 登録・ログインに関する情報を表示
+  String loginUserEmail ="";
+
+  String loginUserPassword = "";
+  String infoText = "";
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: Container(
+          padding: EdgeInsets.all(32),
+          child: Column(
+            children: <Widget>[
+              TextFormField(
+                // テキスト入力のラベルを設定
+                decoration: InputDecoration(labelText: "メールアドレス"),
+                onChanged: (String value) {
+                  setState(() {
+                    loginUserEmail = value;
+                  });
+                },
+              ),
+              const SizedBox(height: 8),
+              TextFormField(
+                decoration: InputDecoration(labelText: "パスワード"),
+                // パスワードが見えないようにする
+                obscureText: true,
+                onChanged: (String value) {
+                  setState(() {
+                    loginUserPassword = value;
+                  });
+                },
+              ),
+              const SizedBox(height: 8),
+              ElevatedButton(
+                onPressed: () async {
+                  try {
+                    // メール/パスワードでログイン
+                    final FirebaseAuth auth = FirebaseAuth.instance;
+                    final UserCredential result =
+                        await auth.signInWithEmailAndPassword(
+                      email: loginUserEmail,
+                      password: loginUserPassword,
+                    );
+
+                    // ログインに成功
+                    final User user = result.user!;
+                    await Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(builder: (context) {
+                          return HomePage();
+                        }),
+                      );
+                  } catch (e) {
+                    // ログインに失敗した場合
+                    setState(() {
+                      infoText = "ログイン に失敗しました：${e.toString()}";
+                    });
+                  }
+                },
+                child: Text("ログイン"),
+              ),
+              const SizedBox(height: 8),
+              Text(infoText)
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
