@@ -145,15 +145,44 @@ class _RenderFloatingActionButton extends StatelessWidget {
 
 class _BottomSheet extends StatelessWidget {
   final DateTime selectedDay;
+
   const _BottomSheet({Key? key, required this.selectedDay}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
+    // サンプルデータ（ここは将来的に入力や保存データに置き換える）
+    final sampleShiftList = [
+      '09:00 - 12:00',
+      '13:00 - 17:00',
+      '18:00 - 21:00',
+    ];
+
     return Container(
-      height: 230.0,
-      width: 700, //高さ
-      color: const Color.fromARGB(255, 74, 74, 74), //色
-      child: Text(
-          ' ${selectedDay.toLocal().toString().split(' ')[0]}にシフトを追加する'), // ここで表示
+      height: 300.0,
+      color: const Color.fromARGB(255, 199, 249, 180),
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            '${selectedDay.toLocal().toString().split(' ')[0]} にシフトを追加する',
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 12),
+          Expanded(
+            child: ListView.builder(
+              itemCount: sampleShiftList.length,
+              itemBuilder: (context, index) {
+                return ListTile(
+                  title: Text(sampleShiftList[index]),
+                  leading: const Icon(Icons.schedule),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
+
