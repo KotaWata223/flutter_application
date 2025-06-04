@@ -6,26 +6,25 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 
-Future <void> main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  try{
+  try {
     if (kIsWeb) {
       await Firebase.initializeApp(
-        options:const FirebaseOptions(
-          apiKey: "AIzaSyAIi9fnYe5JBbZBKwOdu38KmJo7uYnkdZo",
-          authDomain: "flutter-app-28e10.firebaseapp.com",
-          projectId: "flutter-app-28e10",
-          storageBucket: "flutter-app-28e10.firebasestorage.app",
-          messagingSenderId: "689211015421",
-          appId: "1:689211015421:web:54adcfa16e67952680fe94",
-          measurementId: "G-Z7CBMPKC1E"
-        ),
+        options: const FirebaseOptions(
+            apiKey: "AIzaSyAIi9fnYe5JBbZBKwOdu38KmJo7uYnkdZo",
+            authDomain: "flutter-app-28e10.firebaseapp.com",
+            projectId: "flutter-app-28e10",
+            storageBucket: "flutter-app-28e10.firebasestorage.app",
+            messagingSenderId: "689211015421",
+            appId: "1:689211015421:web:54adcfa16e67952680fe94",
+            measurementId: "G-Z7CBMPKC1E"),
       );
     } else {
       await Firebase.initializeApp();
     }
     runApp(const MyApp());
-  } catch (e){
+  } catch (e) {
     runApp(
       MaterialApp(
         home: Scaffold(
@@ -36,7 +35,7 @@ Future <void> main() async {
       ),
     );
   }
-  } 
+}
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -93,7 +92,7 @@ class _MyAuthPageState extends State<MyAuthPage> {
   // 入力されたパスワード
   String newUserPassword = "";
   // 登録・ログインに関する情報を表示
-  String loginUserEmail ="";
+  String loginUserEmail = "";
 
   String loginUserPassword = "";
   String infoText = "";
@@ -141,10 +140,10 @@ class _MyAuthPageState extends State<MyAuthPage> {
                     // ログインに成功
                     final User user = result.user!;
                     await Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(builder: (context) {
-                          return HomePage();
-                        }),
-                      );
+                      MaterialPageRoute(builder: (context) {
+                        return BottomNavigation(); // HomePage ではなく BottomNavigation に遷移
+                      }),
+                    );
                   } catch (e) {
                     // ログインに失敗した場合
                     setState(() {
