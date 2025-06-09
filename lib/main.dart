@@ -76,17 +76,17 @@ class MyApp extends StatelessWidget {
         Locale('en', ''), // 英語
       ],
       //home: const MyHomePage(title: 'Flutter Demo Home Page'),
-      home: MyAuthPage(),
+      home: LoginPage(),
     );
   }
 }
 
-class MyAuthPage extends StatefulWidget {
+class LoginPage extends StatefulWidget {
   @override
-  _MyAuthPageState createState() => _MyAuthPageState();
+  _LoginPageState createState() => _LoginPageState();
 }
 
-class _MyAuthPageState extends State<MyAuthPage> {
+class _LoginPageState extends State<LoginPage> {
   // 入力されたメールアドレス
   String newUserEmail = "";
   // 入力されたパスワード

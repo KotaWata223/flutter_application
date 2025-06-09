@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter_application_2/main.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
+FirebaseAuth auth = FirebaseAuth.instance;
 class MyPage extends StatelessWidget {
   const MyPage({super.key});
 
@@ -15,39 +19,44 @@ class MyPage extends StatelessWidget {
         child: Column(
           children: [
             // プロフィール画像
-            CircleAvatar(
+            const CircleAvatar(
               radius: 50,
-              backgroundImage: AssetImage('assets/profile.jpg'), // 画像を追加
+              backgroundImage: AssetImage('assets/profile.jpg'),
             ),
-            SizedBox(height: 10),
-            Text('渡辺晃太朗', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-            Text('kota@example.com', style: TextStyle(fontSize: 16, color: Colors.grey)),
-
-            SizedBox(height: 20),
+            const SizedBox(height: 10),
+            const Text(
+              '渡辺晃太朗',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            const Text(
+              'kota@example.com',
+              style: TextStyle(fontSize: 16, color: Colors.grey),
+            ),
+            const SizedBox(height: 20),
 
             // 設定メニュー
-            Expanded(
+            Flexible(
               child: ListView(
                 children: [
                   ListTile(
-                    leading: Icon(Icons.lock),
-                    title: Text('パスワード変更'),
+                    leading: const Icon(Icons.lock),
+                    title: const Text('パスワード変更'),
                     onTap: () {
                       // パスワード変更画面へ
                     },
                   ),
                   ListTile(
-                    leading: Icon(Icons.notifications),
-                    title: Text('通知設定'),
+                    leading: const Icon(Icons.notifications),
+                    title: const Text('通知設定'),
                     onTap: () {
                       // 通知設定画面へ
                     },
                   ),
                   ListTile(
-                    leading: Icon(Icons.logout),
-                    title: Text('ログアウト'),
+                    leading: const Icon(Icons.logout),
+                    title: const Text('ログアウト'),
                     onTap: () {
-                      // ログアウト処理
+                      openLogOutDialog(context);
                     },
                   ),
                 ],
@@ -58,4 +67,57 @@ class MyPage extends StatelessWidget {
       ),
     );
   }
+
+  void openLogOutDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return CupertinoAlertDialog(
+          title: const Text('ログアウト'),
+          content: const Text('ログアウトしますか?'),
+          actions: [
+            CupertinoDialogAction(
+              child: const Text(
+                'キャンセル',
+                style: TextStyle(color: Colors.blueAccent),
+              ),
+              isDestructiveAction: true,
+              onPressed: () => Navigator.pop(context),
+            ),
+            CupertinoDialogAction(
+              child: const Text(
+                'ログアウト',
+                style: TextStyle(color: Colors.red),
+              ),
+              onPressed: () {
+                logout(context);
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  
+
+ void logout(BuildContext context) async {
+  final FirebaseAuth auth = FirebaseAuth.instance;
+
+  try {
+    await auth.signOut();
+    if (context.mounted) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => LoginPage(),
+        ),
+      );
+    }
+  } catch (e) {
+    print('ログアウトエラー: $e');
+  }
+}
+
 }
