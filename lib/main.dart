@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_2/src/MyAuthPage.dart';
 import 'package:flutter_application_2/src/screens/HomePage.dart';
 import 'src/app.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -174,7 +175,14 @@ class _LoginPageState extends State<LoginPage> {
             ),
             SizedBox(height: 8),
             TextButton(onPressed: () {}, child: Text("パスワードを忘れた")),
-            TextButton(onPressed: () {}, child: Text("アカウントを作成")),
+            TextButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => MyAuthPage()),
+                  );
+                },
+                child: Text("アカウントを作成")),
             SizedBox(height: 8),
             Text(infoText)
           ],
