@@ -101,64 +101,85 @@ class _MyAuthPageState extends State<MyAuthPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: Container(
-          padding: EdgeInsets.all(32),
-          child: Column(
-            children: <Widget>[
-              TextFormField(
-                // テキスト入力のラベルを設定
-                decoration: InputDecoration(labelText: "メールアドレス"),
-                onChanged: (String value) {
+          child: Container(
+        padding: EdgeInsets.all(32),
+        child: Column(
+          children: <Widget>[
+            Text(
+              "ログイン",
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 20),
+            TextFormField(
+              decoration: InputDecoration(
+                labelText: "メールアドレス",
+                border: OutlineInputBorder(),
+                prefixIcon: Icon(Icons.email),
+              ),
+              onChanged: (String value) {
+                setState(() {
+                  loginUserEmail = value;
+                });
+              },
+            ),
+            SizedBox(height: 8),
+            TextFormField(
+              decoration: InputDecoration(
+                labelText: "パスワード",
+                border: OutlineInputBorder(),
+                prefixIcon: Icon(Icons.lock),
+              ),
+              obscureText: true,
+              onChanged: (String value) {
+                setState(() {
+                  loginUserPassword = value;
+                });
+              },
+            ),
+            SizedBox(height: 8),
+            Row(
+              children: [
+                Checkbox(value: true, onChanged: (bool? value) {}),
+                Text("ログイン状態を保持する"),
+              ],
+            ),
+            SizedBox(height: 20),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.green,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10)),
+              ),
+              onPressed: () async {
+                try {
+                  final FirebaseAuth auth = FirebaseAuth.instance;
+                  final UserCredential result =
+                      await auth.signInWithEmailAndPassword(
+                    email: loginUserEmail,
+                    password: loginUserPassword,
+                  );
+                  final User user = result.user!;
+                  await Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(builder: (context) {
+                      return BottomNavigation();
+                    }),
+                  );
+                } catch (e) {
                   setState(() {
-                    loginUserEmail = value;
+                    infoText = "ログイン に失敗しました：${e.toString()}";
                   });
-                },
-              ),
-              const SizedBox(height: 8),
-              TextFormField(
-                decoration: InputDecoration(labelText: "パスワード"),
-                // パスワードが見えないようにする
-                obscureText: true,
-                onChanged: (String value) {
-                  setState(() {
-                    loginUserPassword = value;
-                  });
-                },
-              ),
-              const SizedBox(height: 8),
-              ElevatedButton(
-                onPressed: () async {
-                  try {
-                    // メール/パスワードでログイン
-                    final FirebaseAuth auth = FirebaseAuth.instance;
-                    final UserCredential result =
-                        await auth.signInWithEmailAndPassword(
-                      email: loginUserEmail,
-                      password: loginUserPassword,
-                    );
-
-                    // ログインに成功
-                    final User user = result.user!;
-                    await Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(builder: (context) {
-                        return BottomNavigation(); // HomePage ではなく BottomNavigation に遷移
-                      }),
-                    );
-                  } catch (e) {
-                    // ログインに失敗した場合
-                    setState(() {
-                      infoText = "ログイン に失敗しました：${e.toString()}";
-                    });
-                  }
-                },
-                child: Text("ログイン"),
-              ),
-              const SizedBox(height: 8),
-              Text(infoText)
-            ],
-          ),
+                }
+              },
+              child: Text("ログイン", style: TextStyle(fontSize: 18)),
+            ),
+            SizedBox(height: 8),
+            TextButton(onPressed: () {}, child: Text("パスワードを忘れた")),
+            TextButton(onPressed: () {}, child: Text("アカウントを作成")),
+            SizedBox(height: 8),
+            Text(infoText)
+          ],
         ),
-      ),
+      )),
     );
   }
 }

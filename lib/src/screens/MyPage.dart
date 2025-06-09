@@ -20,7 +20,7 @@ class MyPage extends StatelessWidget {
               backgroundImage: AssetImage('assets/profile.jpg'), // 画像を追加
             ),
             SizedBox(height: 10),
-            Text('田村コウタ', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+            Text('渡辺晃太朗', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
             Text('kota@example.com', style: TextStyle(fontSize: 16, color: Colors.grey)),
 
             SizedBox(height: 20),
