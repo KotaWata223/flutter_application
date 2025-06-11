@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart' as dtp;
+import 'package:flutter_application_2/src/screens/HomePage.dart';
+import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart'
+    as dtp;
 
-class ShiftInputPage extends StatefulWidget {
+class AddShiftPage extends StatefulWidget {
   @override
   _ShiftInputPageState createState() => _ShiftInputPageState();
 }
 
-class _ShiftInputPageState extends State<ShiftInputPage> {
+class _ShiftInputPageState extends State<AddShiftPage> {
   DateTime? _startDateTime;
   DateTime? _endDateTime;
   String? _title;
@@ -20,7 +22,10 @@ class _ShiftInputPageState extends State<ShiftInputPage> {
         padding: const EdgeInsets.all(16),
         child: ListView(
           children: [
-            Text('勤務先: ツルハドラッグ常葉店'),
+            TextField(
+              decoration: const InputDecoration(labelText: '勤務先：'),
+              onChanged: (val) => _title = val,
+            ),
             const SizedBox(height: 10),
             TextField(
               decoration: const InputDecoration(labelText: 'タイトル（任意）'),
@@ -34,12 +39,11 @@ class _ShiftInputPageState extends State<ShiftInputPage> {
               trailing: const Icon(Icons.access_time),
               onTap: () {
                 dtp.DatePicker.showDateTimePicker(context,
-                  locale: dtp.LocaleType.jp,
-                  showTitleActions: true,
-                  currentTime: DateTime.now(),
-                  onConfirm: (date) {
-                    setState(() => _startDateTime = date);
-                  });
+                    locale: dtp.LocaleType.jp,
+                    showTitleActions: true,
+                    currentTime: DateTime.now(), onConfirm: (date) {
+                  setState(() => _startDateTime = date);
+                });
               },
             ),
             ListTile(
@@ -49,12 +53,11 @@ class _ShiftInputPageState extends State<ShiftInputPage> {
               trailing: const Icon(Icons.access_time),
               onTap: () {
                 dtp.DatePicker.showDateTimePicker(context,
-                  locale: dtp.LocaleType.jp,
-                  showTitleActions: true,
-                  currentTime: DateTime.now(),
-                  onConfirm: (date) {
-                    setState(() => _endDateTime = date);
-                  });
+                    locale: dtp.LocaleType.jp,
+                    showTitleActions: true,
+                    currentTime: DateTime.now(), onConfirm: (date) {
+                  setState(() => _endDateTime = date);
+                });
               },
             ),
             const SizedBox(height: 20),
@@ -67,9 +70,20 @@ class _ShiftInputPageState extends State<ShiftInputPage> {
             ElevatedButton(
               onPressed: () {
                 // 保存処理など
-                print('保存: $_startDateTime - $_endDateTime\nタイトル: $_title\nメモ: $_memo');
+                print(
+                    '保存: $_startDateTime - $_endDateTime\nタイトル: $_title\nメモ: $_memo');
               },
-              child: const Text('完了する'),
+              child: ElevatedButton(
+                child: const Text('Button'),
+                style: ElevatedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+                onPressed: () {
+                    Navigator.pop(context);
+                },
+              ),
             ),
           ],
         ),
