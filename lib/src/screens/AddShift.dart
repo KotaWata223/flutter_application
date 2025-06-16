@@ -35,7 +35,8 @@ class _ShiftInputPageState extends State<AddShiftPage> {
             ListTile(
               title: Text(_startDateTime == null
                   ? '開始日時を選択'
-                  : '開始: ${_startDateTime.toString()}'),
+                  : '開始: ${_startDateTime.toString().substring(0, 16)
+}'),
               trailing: const Icon(Icons.access_time),
               onTap: () {
                 dtp.DatePicker.showDateTimePicker(context,
@@ -49,7 +50,8 @@ class _ShiftInputPageState extends State<AddShiftPage> {
             ListTile(
               title: Text(_endDateTime == null
                   ? '終了日時を選択'
-                  : '終了: ${_endDateTime.toString()}'),
+                  : '終了: ${_endDateTime.toString().substring(0, 16)
+}'),
               trailing: const Icon(Icons.access_time),
               onTap: () {
                 dtp.DatePicker.showDateTimePicker(context,
