@@ -4,6 +4,7 @@ import 'package:table_calendar/table_calendar.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart'
     as dtp;
 import 'package:flutter_application_2/src/screens/AddShift.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -21,29 +22,43 @@ class _HomePageState extends State<HomePage> {
     return key.day * 1000000 + key.month * 10000 + key.year;
   }
 
+  Future<void> fetchShiftsFromFirestore() async {
+  final snapshot = await FirebaseFirestore.instance.collection('shifts').get();
+
+  Map<DateTime, List> loadedEvents = {};
+
+  for (var doc in snapshot.docs) {
+    final data = doc.data();
+
+    if (data.containsKey('starttime') &&
+        data.containsKey('endtime') &&
+        data.containsKey('title')) {
+      final DateTime start = DateTime.parse(data['starttime']);
+      final DateTime end = DateTime.parse(data['endtime']);
+      final String title = data['title'];
+
+      final normalizedData = DateTime(start.year, start.month, start.day);
+      final eventText =
+          '${start.hour.toString().padLeft(2, '0')}:${start.minute.toString().padLeft(2, '0')}'
+          '〜${end.hour.toString().padLeft(2, '0')}:${end.minute.toString().padLeft(2, '0')} '
+          '$title';
+      if (loadedEvents[normalizedData] == null) {
+        loadedEvents[normalizedData] = [];
+      }
+      loadedEvents[normalizedData]!.add(eventText);
+    }
+  }
+  setState(() {
+    _eventsList = loadedEvents;
+  });
+}
+
   @override
   void initState() {
     super.initState();
     _selectedDay = _focusedDay;
-
+    fetchShiftsFromFirestore(); //
     // サンプルイベントデータ
-    _eventsList = {
-      DateTime.now().subtract(const Duration(days: 2)): ['イベント A6', 'イベント B6'],
-      DateTime.now(): ['イベント A7', 'イベント B7', 'イベント C7', 'イベント D7'],
-      DateTime.now().add(const Duration(days: 1)): [
-        'イベント A8',
-        'イベント B8',
-        'イベント C8',
-        'イベント D8'
-      ],
-      DateTime.now().add(const Duration(days: 3)):
-          Set.from(['イベント A9', 'イベント A9', 'イベント B9']).toList(),
-      DateTime.now().add(const Duration(days: 7)): [
-        'イベント A10',
-        'イベント B10',
-        'イベント C10'
-      ],
-    };
   }
 
   @override
@@ -192,9 +207,9 @@ class _BottomSheet extends StatelessWidget {
             ),
             onPressed: () {
               Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => AddShiftPage()),
-                  );
+                context,
+                MaterialPageRoute(builder: (context) => AddShiftPage()),
+              );
             },
           ),
         ],

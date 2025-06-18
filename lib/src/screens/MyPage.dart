@@ -25,10 +25,6 @@ class MyPage extends StatelessWidget {
             ),
             const SizedBox(height: 10),
             const Text(
-              '渡辺晃太朗',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-            const Text(
               'kota@example.com',
               style: TextStyle(fontSize: 16, color: Colors.grey),
             ),
