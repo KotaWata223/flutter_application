@@ -57,7 +57,7 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     _selectedDay = _focusedDay;
-    fetchShiftsFromFirestore(); //
+    fetchShiftsFromFirestore(); 
     // サンプルイベントデータ
   }
 
