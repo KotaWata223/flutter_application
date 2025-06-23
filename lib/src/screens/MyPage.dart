@@ -9,6 +9,7 @@ class MyPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+     User? user = FirebaseAuth.instance.currentUser;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -24,8 +25,8 @@ class MyPage extends StatelessWidget {
               backgroundImage: AssetImage('assets/profile.jpg'),
             ),
             const SizedBox(height: 10),
-            const Text(
-              'kota@example.com',
+             Text(
+              user?.email ?? 'メールアドレス未取得',
               style: TextStyle(fontSize: 16, color: Colors.grey),
             ),
             const SizedBox(height: 20),
@@ -34,6 +35,13 @@ class MyPage extends StatelessWidget {
             Flexible(
               child: ListView(
                 children: [
+                  ListTile(
+                    leading: const Icon(Icons.notifications),
+                    title: const Text('勤務先登録'),
+                    onTap: () {
+                      // 通知設定画面へ
+                    },
+                  ),
                   ListTile(
                     leading: const Icon(Icons.lock),
                     title: const Text('パスワード変更'),
