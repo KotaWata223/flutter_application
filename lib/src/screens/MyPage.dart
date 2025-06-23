@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_application_2/main.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_application_2/src/screens/AddWorkPlace.dart';
+import 'package:flutter_application_2/src/screens/ChangePass.dart';
 
 FirebaseAuth auth = FirebaseAuth.instance;
 class MyPage extends StatelessWidget {
@@ -30,16 +32,18 @@ class MyPage extends StatelessWidget {
               style: TextStyle(fontSize: 16, color: Colors.grey),
             ),
             const SizedBox(height: 20),
-
             // 設定メニュー
             Flexible(
               child: ListView(
                 children: [
                   ListTile(
-                    leading: const Icon(Icons.notifications),
+                    leading: const Icon(Icons.work),
                     title: const Text('勤務先登録'),
                     onTap: () {
-                      // 通知設定画面へ
+                      Navigator.push(
+                        context, 
+                        MaterialPageRoute(builder: (context) => Addworkplace()),
+                        );
                     },
                   ),
                   ListTile(
