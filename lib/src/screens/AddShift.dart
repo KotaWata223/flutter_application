@@ -12,10 +12,11 @@ class _ShiftInputPageState extends State<AddShiftPage> {
   final TextEditingController _memoContentController = TextEditingController();
 
   final CollectionReference _shifts = FirebaseFirestore.instance.collection('shifts');
+  final CollectionReference _workplaces = FirebaseFirestore.instance.collection('workplace');
 
   DateTime? _startDateTime;
   DateTime? _endDateTime;
-  String? _title;
+  String? _selectedWorkplace;
   String? _memo;
 
   @override
@@ -26,9 +27,25 @@ class _ShiftInputPageState extends State<AddShiftPage> {
         padding: const EdgeInsets.all(16),
         child: ListView(
           children: [
-            TextField(
-              decoration: const InputDecoration(labelText: '勤務先（必須）'),
-              onChanged: (val) => _title = val,
+            FutureBuilder<QuerySnapshot>(
+              future: _workplaces.get(),
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) return const CircularProgressIndicator();
+                final workplaces = snapshot.data!.docs;
+
+                return DropdownButtonFormField<String>(
+                  decoration: const InputDecoration(labelText: '勤務先（必須）'),
+                  items: workplaces.map((doc) {
+                    final name = doc['place'] as String;
+                    return DropdownMenuItem<String>(
+                      value: name,
+                      child: Text(name),
+                    );
+                  }).toList(),
+                  onChanged: (val) => setState(() => _selectedWorkplace = val),
+                  value: _selectedWorkplace,
+                );
+              },
             ),
             const SizedBox(height: 10),
             TextField(
@@ -36,6 +53,7 @@ class _ShiftInputPageState extends State<AddShiftPage> {
               decoration: const InputDecoration(labelText: 'タイトル（任意）'),
             ),
             const SizedBox(height: 20),
+            // ↓ ここからは同じ
             ListTile(
               title: Text(_startDateTime == null
                   ? '開始日時を選択'
@@ -86,7 +104,7 @@ class _ShiftInputPageState extends State<AddShiftPage> {
                 ),
               ),
               onPressed: () async {
-                if (_startDateTime == null || _endDateTime == null || _title == null || _title!.isEmpty) {
+                if (_startDateTime == null || _endDateTime == null || _selectedWorkplace == null || _selectedWorkplace!.isEmpty) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text('勤務先・開始・終了の入力は必須です')),
                   );
@@ -94,7 +112,7 @@ class _ShiftInputPageState extends State<AddShiftPage> {
                 }
 
                 await _shifts.add({
-                  'title': _title,
+                  'title': _selectedWorkplace, // ここに選ばれた勤務先を保存
                   'starttime': _startDateTime!.toIso8601String().substring(0, 16),
                   'endtime': _endDateTime!.toIso8601String().substring(0, 16),
                   'memo': _memo ?? '',
