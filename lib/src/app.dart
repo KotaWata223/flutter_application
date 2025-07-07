@@ -30,11 +30,13 @@ class BottomNavigation extends StatefulWidget {
 
 class _BottomNavigationState extends State<BottomNavigation> {
   // 各画面のリスト
-  static const _screens = [
-    HomePage(),
-    PayrollPage(),
-    MyPage()
-  ];
+  // 修正後
+static final List<Widget> _screens = [
+  HomePage(),
+  PayrollPage(),
+  MyPage()
+];
+
   // 選択されている画面のインデックス
   int _selectedIndex = 0;
 

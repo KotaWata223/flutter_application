@@ -23,41 +23,42 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> fetchShiftsFromFirestore() async {
-  final snapshot = await FirebaseFirestore.instance.collection('shifts').get();
+    final snapshot =
+        await FirebaseFirestore.instance.collection('shifts').get();
 
-  Map<DateTime, List> loadedEvents = {};
+    Map<DateTime, List> loadedEvents = {};
 
-  for (var doc in snapshot.docs) {
-    final data = doc.data();
+    for (var doc in snapshot.docs) {
+      final data = doc.data();
 
-    if (data.containsKey('starttime') &&
-        data.containsKey('endtime') &&
-        data.containsKey('title')) {
-      final DateTime start = DateTime.parse(data['starttime']);
-      final DateTime end = DateTime.parse(data['endtime']);
-      final String title = data['title'];
+      if (data.containsKey('starttime') &&
+          data.containsKey('endtime') &&
+          data.containsKey('title')) {
+        final DateTime start = DateTime.parse(data['starttime']);
+        final DateTime end = DateTime.parse(data['endtime']);
+        final String title = data['title'];
 
-      final normalizedData = DateTime(start.year, start.month, start.day);
-      final eventText =
-          '${start.hour.toString().padLeft(2, '0')}:${start.minute.toString().padLeft(2, '0')}'
-          '〜${end.hour.toString().padLeft(2, '0')}:${end.minute.toString().padLeft(2, '0')} '
-          '$title';
-      if (loadedEvents[normalizedData] == null) {
-        loadedEvents[normalizedData] = [];
+        final normalizedData = DateTime(start.year, start.month, start.day);
+        final eventText =
+            '${start.hour.toString().padLeft(2, '0')}:${start.minute.toString().padLeft(2, '0')}'
+            '〜${end.hour.toString().padLeft(2, '0')}:${end.minute.toString().padLeft(2, '0')} '
+            '$title';
+        if (loadedEvents[normalizedData] == null) {
+          loadedEvents[normalizedData] = [];
+        }
+        loadedEvents[normalizedData]!.add(eventText);
       }
-      loadedEvents[normalizedData]!.add(eventText);
     }
+    setState(() {
+      _eventsList = loadedEvents;
+    });
   }
-  setState(() {
-    _eventsList = loadedEvents;
-  });
-}
 
   @override
   void initState() {
     super.initState();
     _selectedDay = _focusedDay;
-    fetchShiftsFromFirestore(); 
+    fetchShiftsFromFirestore();
     // サンプルイベントデータ
   }
 
@@ -199,19 +200,26 @@ class _BottomSheet extends StatelessWidget {
             ),
           ),
           ElevatedButton(
-            child: const Text('Button'),
-            style: ElevatedButton.styleFrom(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
+              child: const Text('Button'),
+              style: ElevatedButton.styleFrom(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
               ),
-            ),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => AddShiftPage()),
-              );
-            },
-          ),
+              onPressed: () async {
+                final result = await Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => AddShiftPage()),
+                );
+
+                if (result == true) {
+                  // Navigator.pop() して _BottomSheet を閉じる
+                  Navigator.pop(context);
+
+                  // HomePage に戻った後にデータを更新したい
+                  // ここで setState() できないので、HomePage 側で処理する必要がある
+                }
+              }),
         ],
       ),
     );

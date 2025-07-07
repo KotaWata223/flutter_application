@@ -118,7 +118,7 @@ class _ShiftInputPageState extends State<AddShiftPage> {
                   'memo': _memo ?? '',
                 });
 
-                Navigator.pop(context);
+                Navigator.pop(context,true);
               },
             ),
           ],
