@@ -129,6 +129,15 @@ class _HomePageState extends State<HomePage> {
               children: getEventForDay(_selectedDay!)
                   .map((event) => ListTile(
                         title: Text(event.toString()),
+                        onTap: () {
+                          showModalBottomSheet(
+                            context: context,
+                            builder: (context) => EditDeleteSheet(
+                              eventText: event.toString(),
+                              selectedDate: _selectedDay!,
+                            ),
+                          );
+                        },
                       ))
                   .toList(),
             ),
@@ -223,5 +232,83 @@ class _BottomSheet extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+class EditDeleteSheet extends StatelessWidget {
+  final String eventText;
+  final DateTime selectedDate;
+
+  const EditDeleteSheet({
+    Key? key,
+    required this.eventText,
+    required this.selectedDate,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(16.0),
+      height: 200,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('選択したイベント:', style: TextStyle(fontWeight: FontWeight.bold)),
+          const SizedBox(height: 8),
+          Text(eventText),
+          const Spacer(),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              ElevatedButton.icon(
+                onPressed: () {
+                  // 編集処理へ（遷移など）
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => AddShiftPage(
+                        // 必要なら既存データを渡す
+                      ),
+                    ),
+                  ).then((result) {
+                    if (result == true) Navigator.pop(context); // 編集後モーダルを閉じる
+                  });
+                },
+                icon: Icon(Icons.edit),
+                label: Text('編集'),
+              ),
+              ElevatedButton.icon(
+                onPressed: () async {
+                  // Firestore からイベント削除処理
+                  await deleteEventFromFirestore(eventText, selectedDate);
+                  Navigator.pop(context);
+                },
+                icon: Icon(Icons.delete),
+                label: Text('削除'),
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> deleteEventFromFirestore(String eventText, DateTime date) async {
+    // title や starttime を条件に削除（要調整）
+    final snapshot = await FirebaseFirestore.instance.collection('shifts').get();
+    for (var doc in snapshot.docs) {
+      final data = doc.data();
+      final DateTime start = DateTime.parse(data['starttime']);
+      final DateTime normalized = DateTime(start.year, start.month, start.day);
+      final title = data['title'];
+      final String formatted = '${start.hour.toString().padLeft(2, '0')}:${start.minute.toString().padLeft(2, '0')}'
+          '〜${DateTime.parse(data['endtime']).hour.toString().padLeft(2, '0')}:${DateTime.parse(data['endtime']).minute.toString().padLeft(2, '0')} $title';
+
+      if (normalized == date && formatted == eventText) {
+        await doc.reference.delete();
+        break;
+      }
+    }
   }
 }
