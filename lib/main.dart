@@ -102,92 +102,106 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-          child: Container(
-        padding: EdgeInsets.all(32),
-        child: Column(
-          children: <Widget>[
-            Text(
-              "ログイン",
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 20),
-            TextFormField(
-              decoration: InputDecoration(
-                labelText: "メールアドレス",
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.email),
+        child: SingleChildScrollView( // キーボードが表示された際に画面がはみ出さないように追加
+          padding: const EdgeInsets.all(32), // 全体的なパディングを調整
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center, // 垂直方向の中央揃え
+            children: <Widget>[
+              const Text(
+                "ログイン",
+                style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold), // フォントサイズを少し大きく
               ),
-              onChanged: (String value) {
-                setState(() {
-                  loginUserEmail = value;
-                });
-              },
-            ),
-            SizedBox(height: 8),
-            TextFormField(
-              decoration: InputDecoration(
-                labelText: "パスワード",
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.lock),
-              ),
-              obscureText: true,
-              onChanged: (String value) {
-                setState(() {
-                  loginUserPassword = value;
-                });
-              },
-            ),
-            SizedBox(height: 8),
-            Row(
-              children: [
-                Checkbox(value: true, onChanged: (bool? value) {}),
-                Text("ログイン状態を保持する"),
-              ],
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.green,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10)),
-              ),
-              onPressed: () async {
-                try {
-                  final FirebaseAuth auth = FirebaseAuth.instance;
-                  final UserCredential result =
-                      await auth.signInWithEmailAndPassword(
-                    email: loginUserEmail,
-                    password: loginUserPassword,
-                  );
-                  final User user = result.user!;
-                  await Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(builder: (context) {
-                      return BottomNavigation();
-                    }),
-                  );
-                } catch (e) {
+              const SizedBox(height: 40), // タイトル下のスペースを増やす
+              TextFormField(
+                decoration: const InputDecoration(
+                  labelText: "メールアドレス",
+                  border: OutlineInputBorder(),
+                  prefixIcon: Icon(Icons.email),
+                ),
+                onChanged: (String value) {
                   setState(() {
-                    infoText = "ログイン に失敗しました：${e.toString()}";
+                    loginUserEmail = value;
                   });
-                }
-              },
-              child: Text("ログイン", style: TextStyle(fontSize: 18)),
-            ),
-            SizedBox(height: 8),
-            TextButton(onPressed: () {}, child: Text("パスワードを忘れた")),
-            TextButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => MyAuthPage()),
-                  );
                 },
-                child: Text("アカウントを作成")),
-            SizedBox(height: 8),
-            Text(infoText)
-          ],
+              ),
+              const SizedBox(height: 16), // テキストフィールド間のスペースを増やす
+              TextFormField(
+                decoration: const InputDecoration(
+                  labelText: "パスワード",
+                  border: OutlineInputBorder(),
+                  prefixIcon: Icon(Icons.lock),
+                ),
+                obscureText: true,
+                onChanged: (String value) {
+                  setState(() {
+                    loginUserPassword = value;
+                  });
+                },
+              ),
+              const SizedBox(height: 8),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start, // 左寄せに
+                children: [
+                  Checkbox(value: true, onChanged: (bool? value) {}),
+                  const Text("ログイン状態を保持する"),
+                ],
+              ),
+              const SizedBox(height: 30), // ボタン上のスペースを増やす
+              SizedBox(
+                width: double.infinity, // 幅を親要素いっぱいに広げる
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.green,
+                    foregroundColor: Colors.white, // 文字色を白に
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)),
+                    padding: const EdgeInsets.symmetric(vertical: 15), // ボタンの縦方向のパディング
+                  ),
+                  onPressed: () async {
+                    try {
+                      final FirebaseAuth auth = FirebaseAuth.instance;
+                      final UserCredential result =
+                          await auth.signInWithEmailAndPassword(
+                        email: loginUserEmail,
+                        password: loginUserPassword,
+                      );
+                      final User user = result.user!;
+                      await Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(builder: (context) {
+                          return BottomNavigation(); // HomePageではなくBottomNavigationに遷移？
+                        }),
+                      );
+                    } catch (e) {
+                      setState(() {
+                        infoText = "ログインに失敗しました：${e.toString()}";
+                      });
+                    }
+                  },
+                  child: const Text("ログイン", style: TextStyle(fontSize: 20)), // フォントサイズを少し大きく
+                ),
+              ),
+              const SizedBox(height: 16), // ボタン下のスペース
+              TextButton(
+                  onPressed: () {},
+                  child: const Text("パスワードを忘れた", style: TextStyle(fontSize: 16))), // フォントサイズを調整
+              TextButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => MyAuthPage()),
+                    );
+                  },
+                  child: const Text("アカウントを作成", style: TextStyle(fontSize: 16))), // フォントサイズを調整
+              const SizedBox(height: 16),
+              Text(
+                infoText,
+                style: const TextStyle(color: Colors.red), // エラーメッセージを見やすく
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
         ),
-      )),
+      ),
     );
   }
 }

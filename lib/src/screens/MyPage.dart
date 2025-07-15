@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_application_2/main.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_application_2/src/screens/AddWorkPlace.dart';
-import 'package:flutter_application_2/src/screens/ChangePass.dart';
+import 'package:flutter_application_2/src/screens/ChangePasswordPage.dart';
 
 FirebaseAuth auth = FirebaseAuth.instance;
 class MyPage extends StatelessWidget {
@@ -50,7 +50,10 @@ class MyPage extends StatelessWidget {
                     leading: const Icon(Icons.lock),
                     title: const Text('パスワード変更'),
                     onTap: () {
-                      // パスワード変更画面へ
+                      Navigator.push(
+                        context, 
+                        MaterialPageRoute(builder: (context) => ChangePasswordPage()),
+                        );
                     },
                   ),
                   ListTile(
