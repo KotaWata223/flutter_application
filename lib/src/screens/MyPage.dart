@@ -4,6 +4,7 @@ import 'package:flutter_application_2/main.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_application_2/src/screens/AddWorkPlace.dart';
 import 'package:flutter_application_2/src/screens/ChangePasswordPage.dart';
+import 'package:flutter_application_2/src/screens/NotificationSettingsPage.dart';
 
 FirebaseAuth auth = FirebaseAuth.instance;
 class MyPage extends StatelessWidget {
@@ -60,7 +61,10 @@ class MyPage extends StatelessWidget {
                     leading: const Icon(Icons.notifications),
                     title: const Text('通知設定'),
                     onTap: () {
-                      // 通知設定画面へ
+                      Navigator.push(
+                        context, 
+                        MaterialPageRoute(builder: (context) => NotificationSettingsPage()),
+                        );
                     },
                   ),
                   ListTile(
